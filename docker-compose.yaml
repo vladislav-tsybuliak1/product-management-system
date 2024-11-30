@@ -7,7 +7,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - data:/var/lib1/postgresql/data
+      - data:/var/lib/postgresql/data
 
 volumes:
   data:
