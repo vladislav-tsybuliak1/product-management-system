@@ -12,14 +12,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models import Base
-
+from core.models import Base, IntIdPkMixin
 
 if TYPE_CHECKING:
     from core.models.category import Category
 
 
-class Product(Base):
+class Product(IntIdPkMixin, Base):
     name: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(
         Text,
