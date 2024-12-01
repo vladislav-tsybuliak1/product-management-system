@@ -12,7 +12,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models import Base, IntIdPkMixin
+from core.models import Base
+from core.models.mixins import IntIdPkMixin
+
 
 if TYPE_CHECKING:
     from core.models.category import Category
