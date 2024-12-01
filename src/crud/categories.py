@@ -27,3 +27,15 @@ async def get_categories(session: AsyncSession) -> list[Category]:
     result: Result = await session.execute(stmt)
     categories = result.scalars().all()
     return list(categories)
+
+
+async def get_category(session: AsyncSession, category_id: int) -> Category | None:
+    return await session.get(Category, category_id)
+
+
+async def delete_category(
+    session: AsyncSession,
+    category: Category,
+) -> None:
+    await session.delete(category)
+    await session.commit()
