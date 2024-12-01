@@ -23,3 +23,14 @@ async def get_product(
     product_id: int
 ) -> Product | None:
     return await session.get(Product, product_id)
+
+
+async def update_product(
+    session: AsyncSession,
+    product: Product,
+    product_update: ProductCreateUpdate,
+) -> Product:
+    for attr, value in product_update.model_dump().items():
+        setattr(product, attr, value)
+    await session.commit()
+    return product
