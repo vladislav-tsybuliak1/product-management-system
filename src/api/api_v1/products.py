@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper, Product
 from core.schemas.product import ProductRead, ProductCreateUpdate
 from crud import products as products_crud
+from crud.dependecies import get_product_by_id
 
 router = APIRouter(tags=["Products"])
 
@@ -23,4 +24,11 @@ async def create_product(
         session=session,
         product_create=product_create,
     )
+    return product
+
+
+@router.get("/{product_id}/", response_model=ProductRead)
+async def get_product(
+    product: Annotated[Product, Depends(get_product_by_id)],
+):
     return product
