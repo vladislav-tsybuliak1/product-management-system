@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from unicodedata import category
 
 from core.models import db_helper, Category
 from core.schemas.category import CategoryRead, CategoryCreateUpdate
@@ -34,6 +33,14 @@ async def create_category(
         category_create=category_create,
     )
     return category
+
+
+@router.get("/{category_id}/", response_model=CategoryRead)
+async def get_category(
+    category: Category = Depends(get_category_by_id)
+):
+    return category
+
 
 
 @router.delete("/{category_id}/", status_code=status.HTTP_204_NO_CONTENT)
