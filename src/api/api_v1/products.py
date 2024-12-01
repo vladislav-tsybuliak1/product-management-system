@@ -1,9 +1,3 @@
 from fastapi import APIRouter
 
-from core.config import settings
-
-
-router = APIRouter(
-    prefix=settings.api.v1.products,
-    tags=["Products"]
-)
+router = APIRouter(tags=["Products"])
