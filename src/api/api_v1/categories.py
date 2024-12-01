@@ -56,7 +56,7 @@ async def update_category(
 
 
 @router.delete("/{category_id}/", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_product(
+async def delete_category(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     category: Annotated[Category, Depends(get_category_by_id)],
 ) -> None:
