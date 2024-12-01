@@ -34,7 +34,7 @@ class Product(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.now(),
+        default=datetime.now,
         server_default=func.now(),
     )
     category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
