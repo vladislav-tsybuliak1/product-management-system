@@ -1,9 +1,22 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import String, Text, func, Integer, DateTime, CheckConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import (
+    String,
+    Text,
+    func,
+    Integer,
+    DateTime,
+    CheckConstraint,
+    ForeignKey,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models import Base
+
+
+if TYPE_CHECKING:
+    from core.models.category import Category
 
 
 class Product(Base):
@@ -23,6 +36,12 @@ class Product(Base):
         DateTime,
         default=datetime.now(),
         server_default=func.now(),
+    )
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
+
+    category: Mapped["Category"] = relationship(
+        "Category",
+        back_populates="products",
     )
 
     __table_args__ = (
