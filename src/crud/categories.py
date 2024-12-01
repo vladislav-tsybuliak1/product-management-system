@@ -29,8 +29,22 @@ async def get_categories(session: AsyncSession) -> list[Category]:
     return list(categories)
 
 
-async def get_category(session: AsyncSession, category_id: int) -> Category | None:
+async def get_category(
+    session: AsyncSession,
+    category_id: int,
+) -> Category | None:
     return await session.get(Category, category_id)
+
+
+async def update_category(
+    session: AsyncSession,
+    category: Category,
+    category_update: CategoryCreateUpdate,
+) -> Category:
+    for attr, value in category_update.model_dump().items():
+        setattr(category, attr, value)
+    await session.commit()
+    return category
 
 
 async def delete_category(

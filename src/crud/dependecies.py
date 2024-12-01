@@ -9,8 +9,8 @@ from crud import categories as categories_crud
 
 
 async def get_category_by_id(
-    category_id: Annotated[int, Path],
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    category_id: Annotated[int, Path],
 ) -> Category:
     category = await categories_crud.get_category(
         session=session,
