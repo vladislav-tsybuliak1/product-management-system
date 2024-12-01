@@ -14,12 +14,18 @@ class Product(Base):
         server_default="",
     )
     price: Mapped[int]
+    quantity: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        server_default=func.now(),
         default=datetime.now(),
+        server_default=func.now(),
     )
 
     __table_args__ = (
         CheckConstraint("price >= 0", name="check_price_nonnegative"),
+        CheckConstraint("quantity >= 0", name="check_quantity_nonnegative"),
     )
