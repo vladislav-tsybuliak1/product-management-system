@@ -12,7 +12,7 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 test_engine = create_async_engine(
     url=TEST_DATABASE_URL,
-    echo=True,
+    echo=False,
     connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
