@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Product
 from core.schemas.product import ProductCreateUpdate
-from core.validators import validate_category_exists
+from crud.validators import validate_category_exists
 
 
 async def create_product(
