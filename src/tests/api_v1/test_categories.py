@@ -44,3 +44,17 @@ async def test_create_category(async_client) -> None:
     data = response.json()
     assert data["name"] == category_data["name"]
     assert data["description"] == category_data["description"]
+
+
+@pytest.mark.asyncio
+async def test_create_category_with_not_unique_name(async_client) -> None:
+    category_data_1 = {"name": "The same name"}
+    response_1 = await async_client.post("/api/v1/categories/", json=category_data_1)
+    assert response_1.status_code == 201
+
+    category_data_2 = {"name": "The same name"}
+    response_2 = await async_client.post("/api/v1/categories/", json=category_data_2)
+    assert response_2.status_code == 400
+
+    data = response_2.json()
+    assert data["detail"] == f"Category with name {category_data_1["name"]} already exists."
