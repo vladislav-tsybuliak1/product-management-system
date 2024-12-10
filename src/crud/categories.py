@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Category
 from core.schemas.category import CategoryCreateUpdate
-from core.validators import validate_category_unique_name
+from crud.validators import validate_category_unique_name
 
 
 async def create_category(
