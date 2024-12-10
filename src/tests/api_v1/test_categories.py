@@ -3,8 +3,8 @@ import pytest_asyncio
 from sqlalchemy import Result, select
 
 from core.models import Category
-from tests.api_v1.config_tests import main_app, TestSessionLocal
-from tests.api_v1.config_tests import initialize_database, async_client
+from tests.api_v1.config_tests import TestSessionLocal, async_client
+from tests.api_v1.config_tests import initialize_database
 
 
 CATEGORIES_URL = "/api/v1/categories/"
