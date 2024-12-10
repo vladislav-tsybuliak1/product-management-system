@@ -12,7 +12,7 @@ CATEGORY_ID = 1
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def populate_db_with_categories():
+async def populate_db_with_categories() -> None:
     categories = [
         Category(name="Category 1"),
         Category(name="Category 2"),
@@ -62,7 +62,10 @@ async def test_create_category_with_not_unique_name(async_client) -> None:
     assert response_2.status_code == 400
 
     data = response_2.json()
-    assert data["detail"] == f"Category with name {category_data_1["name"]} already exists."
+    assert (
+        data["detail"]
+        == f"Category with name {category_data_1["name"]} already exists."
+    )
 
 
 @pytest.mark.asyncio
@@ -77,9 +80,20 @@ async def test_get_single_category(async_client) -> None:
     assert category_from_db.name == category["name"]
     assert category_from_db.description == category["description"]
 
+
 @pytest.mark.asyncio
 async def test_get_single_non_existing_category(async_client) -> None:
     response = await async_client.get(f"{CATEGORIES_URL}999/")
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == "Category 999 not found!"
+
+
+@pytest.mark.asyncio
+async def test_update_category(async_client) -> None:
+    category_data = {"name": "Updated name", "description": "Updated description"}
+    response = await async_client.put(f"{CATEGORIES_URL}{CATEGORY_ID}/", json=category_data)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["name"] == category_data["name"]
+    assert data["description"] == category_data["description"]
