@@ -1,4 +1,4 @@
-from itertools import product
+from datetime import datetime
 
 import pytest
 import pytest_asyncio
@@ -56,6 +56,10 @@ async def test_create_product(async_client, sample_category: Category) -> None:
     assert data["quantity"] == product_data["quantity"]
     assert data["category_id"] == product_data["category_id"]
 
+    async with TestSessionLocal() as session:
+        product = await session.get(Product, data["id"])
+    assert datetime.fromisoformat(data["created_at"]) == product.created_at
+
 
 @pytest.mark.asyncio
 async def test_create_product_with_negative_price(
@@ -109,3 +113,32 @@ async def test_get_single_non_existing_product(async_client) -> None:
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == "Product 999 not found!"
+
+
+@pytest.mark.asyncio
+async def test_update_product(
+    async_client,
+    sample_category: Category,
+    sample_product: Product,
+) -> None:
+    updated_product_data = {
+        "name": "Updated name",
+        "description": "Updated description",
+        "price": 10,
+        "quantity": 10,
+        "category_id": sample_category.id,
+    }
+    response = await async_client.put(
+        f"{PRODUCTS_URL}{sample_product.id}/", json=updated_product_data
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["name"] == updated_product_data["name"]
+    assert data["description"] == updated_product_data["description"]
+    assert data["price"] == updated_product_data["price"]
+    assert data["quantity"] == updated_product_data["quantity"]
+    assert data["category_id"] == updated_product_data["category_id"]
+
+    async with TestSessionLocal() as session:
+        product = await session.get(Product, sample_product.id)
+    assert datetime.fromisoformat(data["created_at"]) == product.created_at
