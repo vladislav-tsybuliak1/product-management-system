@@ -38,3 +38,33 @@ async def test_create_product(async_client, category: Category) -> None:
     assert data["price"] == product_data["price"]
     assert data["quantity"] == product_data["quantity"]
     assert data["category_id"] == product_data["category_id"]
+
+
+@pytest.mark.asyncio
+async def test_create_product_with_negative_price(
+    async_client,
+    category: Category,
+) -> None:
+    product_data = {
+        "name": "Test",
+        "price": -1,
+        "quantity": 0,
+        "category_id": category.id,
+    }
+    response = await async_client.post(PRODUCTS_URL, json=product_data)
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_product_with_negative_quantity(
+    async_client,
+    category: Category,
+) -> None:
+    product_data = {
+        "name": "Test",
+        "price": 0,
+        "quantity": -1,
+        "category_id": category.id,
+    }
+    response = await async_client.post(PRODUCTS_URL, json=product_data)
+    assert response.status_code == 422
