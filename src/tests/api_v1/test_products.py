@@ -142,3 +142,14 @@ async def test_update_product(
     async with TestSessionLocal() as session:
         product = await session.get(Product, sample_product.id)
     assert datetime.fromisoformat(data["created_at"]) == product.created_at
+
+
+@pytest.mark.asyncio
+async def test_delete_category(async_client, sample_product: Product) -> None:
+    response = await async_client.delete(f"{PRODUCTS_URL}{sample_product.id}/")
+    assert response.status_code == 204
+
+    async with TestSessionLocal() as session:
+        product_from_db = await session.get(Product, sample_product.id)
+
+    assert product_from_db is None
