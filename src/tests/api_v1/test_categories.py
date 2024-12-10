@@ -19,7 +19,6 @@ async def populate_db_with_categories() -> None:
         Category(name="Category 3"),
     ]
     async with TestSessionLocal() as session:
-        session = TestSessionLocal()
         session.add_all(categories)
         await session.commit()
 
@@ -27,9 +26,10 @@ async def populate_db_with_categories() -> None:
 @pytest.mark.asyncio
 async def test_get_categories(async_client) -> None:
     stmt = select(Category).order_by(Category.id)
-    result: Result = await TestSessionLocal().execute(stmt)
-    categories_from_db = result.scalars().all()
+    async with TestSessionLocal() as session:
+        result: Result = await session.execute(stmt)
 
+    categories_from_db = result.scalars().all()
     response = await async_client.get(CATEGORIES_URL)
     assert response.status_code == 200
     categories = response.json()
@@ -97,3 +97,20 @@ async def test_update_category(async_client) -> None:
     data = response.json()
     assert data["name"] == category_data["name"]
     assert data["description"] == category_data["description"]
+
+
+@pytest.mark.asyncio
+async def test_delete_category(async_client) -> None:
+    category = Category(name="Category To Delete")
+    async with TestSessionLocal() as session:
+        session.add(category)
+        await session.commit()
+        await session.refresh(category)
+
+    response = await async_client.delete(f"{CATEGORIES_URL}{category.id}/")
+    assert response.status_code == 204
+
+    async with TestSessionLocal() as session:
+        category_from_db = await session.get(Category, category.id)
+
+    assert category_from_db is None
